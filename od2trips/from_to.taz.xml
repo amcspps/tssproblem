@@ -1,0 +1,10 @@
+<additional>
+    <tazs>
+        <taz id = "from_a" edges = "A"> </taz>
+        <taz id = "to_b" edges = "B"> </taz>
+        <taz id = "from_c" edges = "C"> </taz>
+        <taz id = "to_d" edges = "D"> </taz>
+        <!-- <taz id = "from_bottom" edges = "BOTTOM"> </taz>
+        <taz id = "to_top" edges = "TOP"> </taz> -->
+    </tazs>
+</additional>
