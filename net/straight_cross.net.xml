@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-01-01 20:37:19 by Eclipse SUMO netedit Version 1.18.0
+<!-- generated on 2024-01-02 02:50:04 by Eclipse SUMO netedit Version 1.18.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/neteditConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="/home/pavel/dev/diplom/tssproblem/straight_cross.net.xml"/>
+        <sumo-net-file value="/home/pavel/dev/diplom/tssproblem/net/straight_cross.net.xml"/>
     </input>
 
     <output>
-        <output-file value="/home/pavel/dev/diplom/tssproblem/straight_cross.net.xml"/>
+        <output-file value="/home/pavel/dev/diplom/tssproblem/net/straight_cross.net.xml"/>
     </output>
 
     <processing>
@@ -56,8 +56,9 @@
         <lane id="D_0" index="0" speed="13.89" length="100.00" shape="198.40,100.00 198.40,0.00"/>
     </edge>
 
-    <tlLogic id="C1" type="static" programID="0" offset="0">
+    <tlLogic id="traffic_light_0" type="static" programID="0" offset="0">
         <phase duration="45" state="GG"/>
+        <phase duration="45" state="yy"/>
         <phase duration="45" state="rr"/>
     </tlLogic>
 
@@ -68,8 +69,8 @@
     </junction>
     <junction id="TOP" type="dead_end" x="200.00" y="200.00" incLanes="B_0" intLanes="" shape="200.00,200.00 203.20,200.00 200.00,200.00"/>
 
-    <connection from="A" to="B" fromLane="0" toLane="0" via=":S_1_0" tl="C1" linkIndex="1" dir="s" state="O"/>
-    <connection from="C" to="D" fromLane="0" toLane="0" via=":S_0_0" tl="C1" linkIndex="0" dir="s" state="O"/>
+    <connection from="A" to="B" fromLane="0" toLane="0" via=":S_1_0" tl="traffic_light_0" linkIndex="1" dir="s" state="O"/>
+    <connection from="C" to="D" fromLane="0" toLane="0" via=":S_0_0" tl="traffic_light_0" linkIndex="0" dir="s" state="O"/>
 
     <connection from=":S_0" to="D" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":S_1" to="B" fromLane="0" toLane="0" dir="s" state="M"/>
