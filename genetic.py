@@ -4,7 +4,6 @@ import traci
 # Constants
 NUM_TRAFFIC_LIGHTS = 1
 PHASES_PER_LIGHT = 3
-MAX_CYCLE_TIME = 135  # Maximum cycle time in seconds
 
 # Function to initialize a random chromosome
 def initialize_chromosome():
@@ -35,14 +34,17 @@ def set_signal_timings(chromosome):
         # Extract phase durations from the chromosome
         phase_durations = chromosome[light * PHASES_PER_LIGHT : (light + 1) * PHASES_PER_LIGHT]
 
-        # Set the phases and durations
-        for phase, duration in enumerate(phase_durations):
-            debug = traci.trafficlight.getRedYellowGreenState(light_id) 
-            traci.trafficlight.setPhase(light_id, phase)
-            traci.trafficlight.setPhaseDuration(light_id, duration)
-            traci.trafficlight.setRedYellowGreenState(light_id, "GGyyrr")
-
-
+        program_logic = traci.trafficlight.Logic(
+            programID="default",
+            type=traci.constants.TRAFFICLIGHT_TYPE_STATIC,
+            currentPhaseIndex=0,
+            phases=(
+                traci.trafficlight.Phase(duration=phase_durations[0], state='GG', minDur=phase_durations[0], maxDur=phase_durations[0]),
+                traci.trafficlight.Phase(duration=phase_durations[1], state='yy', minDur=phase_durations[1], maxDur=phase_durations[1]),
+                traci.trafficlight.Phase(duration=phase_durations[2], state='rr', minDur=phase_durations[2], maxDur=phase_durations[2])
+            )
+        )
+        traci.trafficlight.setProgramLogic(light_id, program_logic)
 
 # Function to simulate traffic and get waiting times using TraCI
 def simulate_traffic(simulation_steps=4000):
@@ -108,5 +110,5 @@ def genetic_algorithm(population_size, num_generations):
     return population[best_solution_index]
 
 # Example usage
-best_solution = genetic_algorithm(population_size=2, num_generations=1)
-print("Best Traffic Signal Timings:", best_solution, "provides time:", evaluate_fitness([45.0, 1.0, 1.0]))
+best_solution = genetic_algorithm(population_size=2, num_generations=2)
+print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution))
