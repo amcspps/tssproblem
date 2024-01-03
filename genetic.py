@@ -44,10 +44,10 @@ def set_signal_timings(chromosome):
             type=traci.constants.TRAFFICLIGHT_TYPE_STATIC,
             currentPhaseIndex=0,
             phases=(
-                traci.trafficlight.Phase(duration=phase_durations[0], state='GrGr', minDur=phase_durations[0], maxDur=phase_durations[0]),
-                traci.trafficlight.Phase(duration=phase_durations[1], state='yryr', minDur=phase_durations[1], maxDur=phase_durations[1]),
-                traci.trafficlight.Phase(duration=phase_durations[2], state='rGrG', minDur=phase_durations[2], maxDur=phase_durations[2]),
-                traci.trafficlight.Phase(duration=phase_durations[3], state='ryry', minDur=phase_durations[3], maxDur=phase_durations[3]),
+                traci.trafficlight.Phase(duration=phase_durations[0], state='GrGr'),
+                traci.trafficlight.Phase(duration=phase_durations[1], state='yryr'),
+                traci.trafficlight.Phase(duration=phase_durations[2], state='rGrG'),
+                traci.trafficlight.Phase(duration=phase_durations[3], state='ryry'),
             )
         )
         traci.trafficlight.setProgramLogic(light_id, program_logic)
@@ -119,6 +119,6 @@ def genetic_algorithm(population_size, num_generations):
     return population[best_solution_index]
 
 # Example usage
-print(evaluate_fitness([10, 10, 12, 10]))
-#best_solution = genetic_algorithm(population_size=16, num_generations=100)
-#print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution))
+#print(evaluate_fitness([10, 10, 12, 10]))
+best_solution = genetic_algorithm(population_size=16, num_generations=20)
+print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution))
