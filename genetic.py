@@ -1,6 +1,6 @@
 import random
 import traci
-
+from multiprocessing import Pool
 # Constants
 NUM_TRAFFIC_LIGHTS = 1
 PHASES_PER_LIGHT = 4
@@ -25,6 +25,11 @@ def evaluate_fitness(chromosome):
         traci.close()
 
     return total_waiting_time
+
+def evaluate_fitness_parallel(chromosome):
+    with Pool() as pool:
+        fitness_values = pool.map(evaluate_fitness, chromosome)
+    return fitness_values
 
 # Function to set signal timings using TraCI
 def set_signal_timings(chromosome):
@@ -83,9 +88,7 @@ def genetic_algorithm(population_size, num_generations):
     population = [initialize_chromosome() for _ in range(population_size)]
 
     for generation in range(num_generations):
-        # Evaluate fitness
-        fitness_values = [evaluate_fitness(chromosome) for chromosome in population]
-
+        
         # Selection
         selected_indices = random.sample(range(population_size), k=population_size // 2 * 2)  # Ensure an even number
         parents = [population[i] for i in selected_indices]
@@ -102,8 +105,13 @@ def genetic_algorithm(population_size, num_generations):
         # Combine parents and offspring
         combined_population = parents + offspring
 
+        # Evaluate fitness //TODO: multithread
+        #fitness_values = [evaluate_fitness(chromosome) for chromosome in combined_population]
+
+        fitness_values = evaluate_fitness_parallel(combined_population)
+
         # Select the top individuals for the next generation
-        top_indices = sorted(range(population_size), key=lambda x: fitness_values[x])[:population_size]
+        top_indices = sorted(range(len(combined_population)), key=lambda x: fitness_values[x])[:population_size]
         population = [combined_population[i] for i in top_indices]
 
     # Return the best solution
@@ -111,6 +119,6 @@ def genetic_algorithm(population_size, num_generations):
     return population[best_solution_index]
 
 # Example usage
-print(evaluate_fitness([1, 1, 1, 1]))
-#best_solution = genetic_algorithm(population_size=2, num_generations=2)
+print(evaluate_fitness([10, 10, 12, 10]))
+#best_solution = genetic_algorithm(population_size=16, num_generations=100)
 #print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution))

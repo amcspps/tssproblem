@@ -75,10 +75,10 @@
     </edge>
 
     <tlLogic id="traffic_light_0" type="static" programID="0" offset="0">
-        <phase duration="1" state="GrGr"/>
-        <phase duration="1"  state="yryr"/>
-        <phase duration="1" state="rGrG"/>
-        <phase duration="1"  state="ryry"/>
+        <phase duration="42" state="GrGr"/>
+        <phase duration="20"  state="yryr"/>
+        <phase duration="18" state="rGrG"/>
+        <phase duration="18"  state="ryry"/>
     </tlLogic>
 
     <junction id="BOTTOM" type="dead_end" x="200.00" y="0.00" incLanes="D_0" intLanes="" shape="200.00,0.00 196.80,0.00 200.00,0.00"/>
