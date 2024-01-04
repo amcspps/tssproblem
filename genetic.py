@@ -1,6 +1,7 @@
 import random
 import traci
 from multiprocessing import Pool
+import utils
 # Constants
 NUM_TRAFFIC_LIGHTS = 1
 PHASES_PER_LIGHT = 4
@@ -109,5 +110,6 @@ def genetic_algorithm(population_size, num_generations):
     best_solution_index = min(range(population_size), key=lambda x: fitness_values[x])
     return population[best_solution_index]
 
+utils.tlLogic_loader()
 best_solution = genetic_algorithm(population_size=16, num_generations=20)
 print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution))

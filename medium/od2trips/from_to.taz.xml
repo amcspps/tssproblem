@@ -10,5 +10,6 @@
         <taz id = "to_f" edges = "t_f"> </taz>
         <taz id = "from_e" edges = "f_e"> </taz>
         <taz id = "to_a" edges = "t_a"> </taz>
+        <taz id = "to_b" edges = "t_b"> </taz>
     </tazs>
 </additional>

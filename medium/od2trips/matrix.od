@@ -10,4 +10,5 @@ $O;D2
          from_b          to_d       1000
          from_c          to_e       1000
          from_d          to_f       1000
-         from_e          to_a       1000
+         from_e          to_a       500
+         from_e          to_b       500
