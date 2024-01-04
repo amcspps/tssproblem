@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-01-02 14:17:10 by Eclipse SUMO netedit Version 1.18.0
+<!-- generated on 2024-01-03 22:31:20 by Eclipse SUMO netedit Version 1.18.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/neteditConfiguration.xsd">
 
     <input>
@@ -62,7 +62,7 @@
         <lane id="D_0" index="0" speed="13.89" length="92.80" shape="198.40,92.80 198.40,0.00"/>
     </edge>
     <edge id="E" from="J0" to="S" priority="-1">
-        <lane id="E_0" index="0" speed="13.89" length="119.89" shape="72.87,99.48 192.76,98.46"/>
+        <lane id="E_0" index="0" speed="13.89" length="119.90" shape="72.87,99.48 192.76,98.46"/>
     </edge>
     <edge id="F" from="S" to="J1" priority="-1">
         <lane id="F_0" index="0" speed="13.89" length="106.86" shape="207.20,98.40 314.06,98.40"/>
@@ -71,14 +71,14 @@
         <lane id="G_0" index="0" speed="13.89" length="106.86" shape="314.06,101.60 207.20,101.60"/>
     </edge>
     <edge id="H" from="S" to="J0" priority="-1">
-        <lane id="H_0" index="0" speed="13.89" length="119.89" shape="192.79,101.66 72.90,102.68"/>
+        <lane id="H_0" index="0" speed="13.89" length="119.90" shape="192.79,101.66 72.89,102.68"/>
     </edge>
 
     <tlLogic id="traffic_light_0" type="static" programID="0" offset="0">
         <phase duration="42" state="GrGr"/>
-        <phase duration="20"  state="yryr"/>
+        <phase duration="20" state="yryr"/>
         <phase duration="18" state="rGrG"/>
-        <phase duration="18"  state="ryry"/>
+        <phase duration="18" state="ryry"/>
     </tlLogic>
 
     <junction id="BOTTOM" type="dead_end" x="200.00" y="0.00" incLanes="D_0" intLanes="" shape="200.00,0.00 196.80,0.00 200.00,0.00"/>

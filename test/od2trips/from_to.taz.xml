@@ -8,6 +8,5 @@
         <taz id = "to_f" edges = "F"> </taz>
         <taz id = "from_g" edges = "G"> </taz>
         <taz id = "to_h" edges = "H"> </taz>
-        
     </tazs>
 </additional>

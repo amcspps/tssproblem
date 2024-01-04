@@ -6,8 +6,9 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="osm.net.xml"/>
-        <additional-files value="osm.poly.xml"/>
+        <net-file value="../net/osm.net.xml"/>
+        <additional-files value="../polygons/osm.poly.xml"/>
+        <route-files value = "/home/pavel/dev/diplom/tssproblem/medium/duaIterate/iterations/049/trips.odtrips_049.rou.xml"/>
     </input>
 
     <processing>
