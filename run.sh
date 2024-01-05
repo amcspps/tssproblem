@@ -22,6 +22,7 @@ cd ".."
 
 cd "duaIterate" || exit 1
 
+./clean.sh
 ./duaIterate_run.sh
 
 cd -

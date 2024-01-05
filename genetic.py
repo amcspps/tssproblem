@@ -2,52 +2,49 @@ import random
 import traci
 from multiprocessing import Pool
 import utils
-# Constants
-NUM_TRAFFIC_LIGHTS = 1
-PHASES_PER_LIGHT = 4
+import subprocess
 
-def initialize_chromosome():
-    return [random.randint(10, 60) for _ in range(NUM_TRAFFIC_LIGHTS * PHASES_PER_LIGHT)]
+def initialize_chromosome(tlLogic_phases):
+    chromosome = []
+    for light_phases in tlLogic_phases.values():
+        chromosome.extend([random.randint(10, 60) for _ in range(len(light_phases))])
+    return chromosome
 
-def evaluate_fitness(chromosome):
-    traci.start(["/usr/bin/sumo", "-c", "/home/pavel/dev/diplom/tssproblem/sumo/simulation.sumocfg"])
-    
+def evaluate_fitness(chromosome, tlLogic_phases):
+    traci.start(["/usr/bin/sumo", "-c", "/home/pavel/dev/diplom/tssproblem/test/sumo/simulation.sumocfg"])
+    #traci.start(["/usr/bin/sumo", "-c", "/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.sumocfg", "--no-warnings"])
     try:
-        set_signal_timings(chromosome)
-
+        set_signal_timings(chromosome, tlLogic_phases=tlLogic_phases)
         total_waiting_time = simulate_traffic()
+        with open('conv_log.txt','a') as file:
+            file.write(str(total_waiting_time) + '\n')
+
     finally:
         traci.close()
 
     return total_waiting_time
 
-def evaluate_fitness_parallel(chromosome):
+def evaluate_fitness_parallel(chromosomes, tlLogic_phases):
     with Pool() as pool:
-        fitness_values = pool.map(evaluate_fitness, chromosome)
+        args = [(chromosome, tlLogic_phases) for chromosome in chromosomes]
+        fitness_values = pool.starmap(evaluate_fitness, args)
     return fitness_values
-
-
-#TODO: rewrite using not yet done loader() function or smth  
-def set_signal_timings(chromosome):
-    for light in range(NUM_TRAFFIC_LIGHTS):
-        light_id = f"traffic_light_{light}"
-        
-        # Extract phase durations from the chromosome
-        phase_durations = chromosome[light * PHASES_PER_LIGHT : (light + 1) * PHASES_PER_LIGHT]
-
+  
+def set_signal_timings(chromosome, tlLogic_phases):
+    for light_id, phases in tlLogic_phases.items():
+        generated_phases_durations = chromosome[:len(phases)]
+        chromosome[len(phases):]
         program_logic = traci.trafficlight.Logic(
             programID="0",
             type=traci.constants.TRAFFICLIGHT_TYPE_STATIC,
             currentPhaseIndex=0,
-            phases=(
-                traci.trafficlight.Phase(duration=phase_durations[0], state='GrGr'),
-                traci.trafficlight.Phase(duration=phase_durations[1], state='yryr'),
-                traci.trafficlight.Phase(duration=phase_durations[2], state='rGrG'),
-                traci.trafficlight.Phase(duration=phase_durations[3], state='ryry'),
+            phases=tuple(
+                traci.trafficlight.Phase(duration=duration, state=state)
+                for duration, state in zip(generated_phases_durations, (state for _, state in phases))
             )
         )
         traci.trafficlight.setProgramLogic(light_id, program_logic)
-
+        #TODO:for loop here with setProgramLogic
 def simulate_traffic(simulation_steps=4000):
     total_waiting_time = 0
 
@@ -75,8 +72,8 @@ def mutate(chromosome, mutation_rate=0.1):
             mutated_chromosome[i] = random.randint(10, 60)
     return mutated_chromosome
 
-def genetic_algorithm(population_size, num_generations):
-    population = [initialize_chromosome() for _ in range(population_size)]
+def genetic_algorithm(population_size, num_generations, id_type_counts, tlLogic_phases):
+    population = [initialize_chromosome(tlLogic_phases) for _ in range(population_size)]
 
     for generation in range(num_generations):
         
@@ -100,7 +97,7 @@ def genetic_algorithm(population_size, num_generations):
         #fitness_values = [evaluate_fitness(chromosome) for chromosome in combined_population]
         
         # Evaluate fitness:multithread
-        fitness_values = evaluate_fitness_parallel(combined_population)
+        fitness_values = evaluate_fitness_parallel(combined_population, tlLogic_phases)
 
         # Select the top individuals for the next generation
         top_indices = sorted(range(len(combined_population)), key=lambda x: fitness_values[x])[:population_size]
@@ -110,6 +107,15 @@ def genetic_algorithm(population_size, num_generations):
     best_solution_index = min(range(population_size), key=lambda x: fitness_values[x])
     return population[best_solution_index]
 
-utils.tlLogic_loader()
-best_solution = genetic_algorithm(population_size=16, num_generations=20)
-print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution))
+
+
+
+
+utils.cleanup_log_files('sorted_log.txt', 'conv_log.txt')
+
+id_type_counts, tlLogic_phases = utils.tlLogic_loader("/home/pavel/dev/diplom/tssproblem/test/net/straight_cross.net.xml")
+#id_type_counts, tlLogic_phases = utils.tlLogic_loader("/home/pavel/dev/diplom/tssproblem/medium/net/osm.net.xml")
+best_solution = genetic_algorithm(population_size=16, num_generations=200, id_type_counts=id_type_counts, tlLogic_phases=tlLogic_phases)
+print("best traffic signal timings:", best_solution, "provides time:", evaluate_fitness(best_solution, tlLogic_phases))
+
+subprocess.run(['sort', '-n', '-o', 'sorted_log.txt', 'conv_log.txt'])
