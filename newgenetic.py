@@ -23,7 +23,8 @@ def fitness_func(ga_instance, solution, solution_idx):
         '-c', sumocfg_file,
         '--statistic-output', output_file,
         '--additional-files', additional_file,
-        '--time-to-teleport', time_to_teleport
+        '--time-to-teleport', time_to_teleport,
+        '--no-warnings'
     ]
 
     process = subprocess.Popen(command)
@@ -43,7 +44,7 @@ ga_instance = pygad.GA(num_generations=50,
                         num_genes=len(gene_space),
                         gene_space=gene_space,
                         gene_type=gene_type,
-                        parallel_processing=None,
+                        parallel_processing=12,
                         )
 
 ga_instance.run()

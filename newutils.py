@@ -28,7 +28,7 @@ def create_new_logic(net_input, additional_output, solution):
             duration = int(solution[0])
             solution = np.delete(solution, 0)
             phase.set('duration', str(int(duration)))
-
+        tl_logic.set('programID', 'generated')
     new_root.extend(tl_logics)
 
     new_tree = ET.ElementTree(new_root)
