@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 from collections import defaultdict
-
+import time
 
 def cleanup_log_files(sorted_log, conv_log):
     with open(sorted_log, 'w') as file:
@@ -46,4 +46,23 @@ def tlLogic_loader(xml_file):
 
     return id_type_counts, tlLogic_phases
 
+#start = time.time()
 #tlLogic_loader("/home/pavel/dev/diplom/tssproblem/medium/net/osm.net.xml")
+#end = time.time()
+#print(f"elapsed: {end-start}")
+
+
+# def parselogic_test(xml_data):
+#     tree = ET.parse(xml_data)
+#     root = tree.getroot()
+#     print("XML parsing successful")
+    
+#     # Extract information from the parsed XML tree
+#     waiting_counts = [int(tripinfo.get("waitingCount", 0)) for tripinfo in root.findall(".//tripinfo")]
+#     mean_waiting_count = sum(waiting_counts) / len(waiting_counts) if waiting_counts else 0
+#     print(f"Mean Waiting Count: {mean_waiting_count}", f"count: {len(wai)}")
+
+# start = time.time()
+# parselogic_test("/home/pavel/dev/diplom/tssproblem/tripinfo_output.xml")
+# end = time.time()
+# print(f"elapsed: {end-start}")

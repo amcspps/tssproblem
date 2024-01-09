@@ -6,9 +6,9 @@ $O;D2
 * some
 * additional
 * comments
-         from_a          to_c       50
-         from_b          to_d       50
-         from_c          to_e       50
-         from_d          to_f       50
-         from_e          to_a       50
-         from_e          to_b       50
+         from_a          to_c       500
+         from_b          to_d       500
+         from_c          to_e       500
+         from_d          to_f       500
+         from_e          to_a       500
+         from_e          to_b       500
