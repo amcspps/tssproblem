@@ -16,7 +16,7 @@ def initialize_chromosome(tlLogic_phases):
 def evaluate_fitness(chromosome, tlLogic_phases):
     #traci.start(["/usr/bin/sumo", "-c", "/home/pavel/dev/diplom/tssproblem/test/sumo/simulation.sumocfg"])
     start_time = time.time()
-    traci.start(["/usr/bin/sumo", "-c", "/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.sumocfg", "--threads", "6"])
+    traci.start(["/usr/bin/sumo", "-c", "/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.sumocfg"])
     traci_start_end_time = time.time()
     traci_startup_time = traci_start_end_time - start_time
 
