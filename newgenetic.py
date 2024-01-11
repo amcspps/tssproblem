@@ -9,7 +9,7 @@ net_file = "/home/pavel/dev/diplom/tssproblem/medium/net/osm.net.xml"
 sumo_executable = '/usr/bin/sumo'
 sumocfg_file = '/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.sumocfg'
 time_to_teleport = str(150)
-
+last_simulation_step = str(5000)
 
 #TODO: net change (argc argv)
 #TODO: reduce iterations
@@ -25,8 +25,8 @@ def fitness_func(ga_instance, solution, solution_idx):
         '--statistic-output', output_file,
         '--additional-files', additional_file,
         '--time-to-teleport', time_to_teleport,
-        '--no-warnings'
-        #end 3600
+        '--no-warnings',
+        '-e', last_simulation_step
     ]
 
     process = subprocess.Popen(command)
@@ -39,14 +39,14 @@ gene_type = int
 
 gene_space = newutils.set_gene_space(net_file)
 
-ga_instance = pygad.GA(num_generations=2,
-                        num_parents_mating=2, 
+ga_instance = pygad.GA(num_generations=10,
+                        num_parents_mating=4, 
                         fitness_func=fitness_func,
-                        sol_per_pop=8,
+                        sol_per_pop=16,
                         num_genes=len(gene_space),
                         gene_space=gene_space,
                         gene_type=gene_type,
-                        parallel_processing=12,
+                        parallel_processing=16,
                         )
 
 ga_instance.run()

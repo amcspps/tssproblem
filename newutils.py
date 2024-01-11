@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import random
 import numpy as np
+
 def set_gene_space(xml_file):
     gene_space = []
 
