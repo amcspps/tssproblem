@@ -18,4 +18,4 @@ cd ../duaIterate/iterations
 rm -rf *
 python /usr/share/sumo/tools/assign/duaIterate.py \
  -n /home/pavel/dev/diplom/tssproblem/$folder_name/net/osm.net.xml \
- -t /home/pavel/dev/diplom/tssproblem/$folder_name/od2trips/trips.odtrips.xml
+ -t /home/pavel/dev/diplom/tssproblem/$folder_name/od2trips/trips.odtrips.xml 
