@@ -59,15 +59,15 @@ def main(argv):
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
         sys.exit(1)
     else:
-        simulation_name = argv[1] #'medium' 
+        simulation_name = argv[1] 
         lower_bounds, upper_bounds = create_bounds(utils.net_dict.get(simulation_name))
         num_variables = len(lower_bounds)
         options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9} 
         optimizer = ps.single.GlobalBestPSO(n_particles=16, dimensions=num_variables, options=options, bounds=(lower_bounds, upper_bounds))
         ff_wrapper = lambda swarm: fitness_func(swarm=swarm, 
                                                 net_file=utils.net_dict.get(simulation_name), 
-                                                folder_name = simulation_name,
-                                                sumocfg_file = utils.sumocfg_dict.get(simulation_name))
+                                                folder_name=simulation_name,
+                                                sumocfg_file=utils.sumocfg_dict.get(simulation_name))
         best_cost, best_position = optimizer.optimize(ff_wrapper, iters=3)
     print(optimizer.cost_history)
     print("best cost values are: ", best_cost)
