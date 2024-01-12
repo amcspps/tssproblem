@@ -1,9 +1,32 @@
 import cma
 import numpy as np
-import c_utils as utils
-import newutils
+import utils
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
+import xml.etree.ElementTree as ET
+
+#cmaes utils
+
+def create_bounds(xml_file):
+    lower_bounds = []
+    upper_bounds = []
+
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+
+    for tl_logic in root.findall(".//tlLogic"):
+        for phase in tl_logic.findall("phase"):
+            if "y" in phase.attrib["state"]:
+                lower_bounds.extend([2.95])
+                upper_bounds.extend([3.05])
+            else:
+                lower_bounds.extend([30])
+                upper_bounds.extend([60])
+
+    bounds_dict = {'bounds': [lower_bounds, upper_bounds]}
+    return bounds_dict
+
+#end utils
 
 net_file = "/home/pavel/dev/diplom/tssproblem/medium/net/osm.net.xml"
 sumo_executable = '/usr/bin/sumo'
@@ -13,10 +36,10 @@ last_simulation_step = str(5000)
 
 
 def fitness_func(solution):
-    iter_id = newutils.generate_id() #TODO: unique id
+    iter_id = utils.generate_id() #TODO: unique id
     output_file = f'/home/pavel/dev/diplom/tssproblem/output/statistic_output_{iter_id}.xml'
     additional_file = f'/home/pavel/dev/diplom/tssproblem/additional/tl_logic_{iter_id}.xml'
-    newutils.create_new_logic(net_input=net_file, additional_output=additional_file, solution=np.round(solution))
+    utils.create_new_logic(net_input=net_file, additional_output=additional_file, solution=np.round(solution))
     command = [sumo_executable,
         '-c', sumocfg_file,
         '--statistic-output', output_file,
@@ -28,10 +51,10 @@ def fitness_func(solution):
 
     process = subprocess.Popen(command)
     process.wait()
-    fitness_value = newutils.get_total_waiting_time(output_file)
+    fitness_value = utils.get_total_waiting_time(output_file)
     return fitness_value
 
-opts = utils.create_bounds(xml_file=net_file)
+opts = create_bounds(xml_file=net_file)
 dimension = len(opts.get('bounds')[1])
 
 opts['popsize'] = 16
@@ -53,6 +76,3 @@ best_fitness = es.result.fbest
 print("Best Solution:", best_solution)
 print("Best Fitness:", best_fitness)
 
-print("Solution History:")
-for solution, fitness in zip(es.result_pretty, es.result.frecent):
-    print(f"Solution: {solution}, Fitness: {fitness}")
