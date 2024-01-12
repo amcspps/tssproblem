@@ -1,0 +1,13 @@
+<configuration>
+    <input>
+        <net-file value = "/home/pavel/dev/diplom/tssproblem/test/net/straight_cross.net.xml"/>
+        <route-files value = "/home/pavel/dev/diplom/tssproblem/test/duaIterate/iterations/049/trips.odtrips_049.rou.xml"/>
+    </input>
+    <time>
+        <begin value = "0"/>
+        <end value = "4000"/>
+    </time>
+    <gui_only>
+        <gui-settings-file value="/home/pavel/dev/diplom/tssproblem/test/sumo/osm.view.xml"/>
+    </gui_only>
+</configuration> 

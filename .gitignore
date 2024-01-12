@@ -1,1 +1,4 @@
-duaIterate/iterations
+*/duaIterate/iterations
+__pycache__
+venv
+tmp

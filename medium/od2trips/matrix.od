@@ -1,0 +1,14 @@
+$O;D2
+* From-Time  To-Time
+0.00 1.00
+* Factor
+1.00
+* some
+* additional
+* comments
+         from_a          to_c       500
+         from_b          to_d       500
+         from_c          to_e       500
+         from_d          to_f       500
+         from_e          to_a       500
+         from_e          to_b       500

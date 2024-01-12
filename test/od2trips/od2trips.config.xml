@@ -1,0 +1,6 @@
+<configuration>
+    <input>
+        <od-matrix-files value  = "matrix.od"/>
+        <taz-files value = "from_to.taz.xml"/>
+    </input>
+</configuration>  
