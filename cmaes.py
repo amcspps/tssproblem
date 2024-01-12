@@ -29,13 +29,6 @@ def create_bounds(xml_file):
 
 #end utils
 
-#net_file = "/home/pavel/dev/diplom/tssproblem/medium/net/osm.net.xml"
-#sumo_executable = '/usr/bin/sumo'
-#sumocfg_file = '/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.sumocfg'
-#time_to_teleport = str(150)
-#last_simulation_step = str(5000)
-
-
 def fitness_func(solution, **kwargs):
     output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/output/statistic_output_{utils.generate_id()}.xml"
     additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/additional/tl_logic_{utils.generate_id()}.xml"
