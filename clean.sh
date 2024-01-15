@@ -15,6 +15,10 @@ elif [ "$1" == "medium/" ]; then
     rm -rf medium/res_cmaes/additional/*
     rm -rf medium/res_pso/output/*
     rm -rf medium/res_pso/additional/*
+    rm -rf medium/res_gen/results/*
+    rm -rf medium/res_pso/results/*
+    rm -rf medium/res_cmaes/results/*
+
     echo "Ok medium"
 elif [ "$1" == "large/" ]; then
     rm -rf large/$1/output/*

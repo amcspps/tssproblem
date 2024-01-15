@@ -30,8 +30,9 @@ def create_bounds(xml_file):
 #end utils
 
 def fitness_func(solution, **kwargs):
-    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/output/statistic_output_{utils.generate_id()}.xml"
-    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/additional/tl_logic_{utils.generate_id()}.xml"
+    iter_id = utils.generate_id()
+    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/output/statistic_output_{iter_id}.xml"
+    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/additional/tl_logic_{iter_id}.xml"
     utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(solution))
     command = [utils.sumo_executable,
         '-c', kwargs.get('sumocfg_file'),
