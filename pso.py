@@ -30,8 +30,9 @@ def create_bounds(xml_file):
 #end utils
 
 def evaluate_particle(particle, **kwargs):
-    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/output/statistic_output_{utils.generate_id()}.xml"
-    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/additional/tl_logic_{utils.generate_id()}.xml"
+    iter_id = utils.generate_id()
+    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_pso/output/statistic_output_{iter_id}.xml"
+    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_pso/additional/tl_logic_{iter_id}.xml"
     utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(particle))
     command = [utils.sumo_executable,
         '-c', kwargs.get('sumocfg_file'),
@@ -63,12 +64,12 @@ def main(argv):
         lower_bounds, upper_bounds = create_bounds(utils.net_dict.get(simulation_name))
         num_variables = len(lower_bounds)
         options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9} 
-        optimizer = ps.single.GlobalBestPSO(n_particles=16, dimensions=num_variables, options=options, bounds=(lower_bounds, upper_bounds))
+        optimizer = ps.single.GlobalBestPSO(n_particles=8, dimensions=num_variables, options=options, bounds=(lower_bounds, upper_bounds))
         ff_wrapper = lambda swarm: fitness_func(swarm=swarm, 
                                                 net_file=utils.net_dict.get(simulation_name), 
                                                 folder_name=simulation_name,
                                                 sumocfg_file=utils.sumocfg_dict.get(simulation_name))
-        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=3)
+        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=5)
     print(optimizer.cost_history)
     print("best cost values are: ", best_cost)
 if __name__ == "__main__":

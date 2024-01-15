@@ -1,8 +1,23 @@
 import xml.etree.ElementTree as ET
 import numpy as np
 import uuid 
+import os
+import csv
 
-#names
+BASEDIR = "/home/pavel/dev/diplom/tssproblem"
+
+#plot-names
+ch_iter_time = 'ch_iter_time'
+#----------
+
+#alg-names
+gen_name = 'gen'
+pso_name = 'pso'
+cmaes_name = 'cmaes'
+#---------
+
+
+#simulation-names
 test_name = 'test'
 medium_name = 'medium'
 large_name = 'large'
@@ -14,21 +29,20 @@ sumo_executable = '/usr/bin/sumo'
 
 #conifigs
 sumocfg_dict = {
-    test_name: '/home/pavel/dev/diplom/tssproblem/test/sumo/simulation.sumocfg',
-    medium_name: '/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.sumocfg',
+    test_name: f'{BASEDIR}/test/sumo/simulation.sumocfg',
+    medium_name: f'{BASEDIR}/medium/sumo/osm.sumocfg',
     large_name: 'placeholder',
 }
 #--------
 
 #net-files
 net_dict = {
-    test_name: '/home/pavel/dev/diplom/tssproblem/test/net/osm.net.xml',
-    medium_name: '/home/pavel/dev/diplom/tssproblem/medium/net/osm.net.xml',
-    large_name: 'placeholder',
+    test_name: f'{BASEDIR}/test/net/osm.net.xml',
+    medium_name: f'{BASEDIR}/medium/net/osm.net.xml',
+    large_name: f'placeholder',
 
 }
 #---------
-
 
 #simulation args
 time_to_teleport = str(150)
@@ -67,3 +81,18 @@ def generate_id():
     unique_id = str(uuid.uuid4())
     return unique_id
 
+def init_log_file(simulation_name, alg_name, plot_name):
+    log_path = f"{BASEDIR}/{simulation_name}/res_{alg_name}/results/{plot_name}.csv"
+    if not os.path.exists(log_path) or os.path.getsize(log_path) == 0:
+        header = list(plot_name.split('_'))
+        with open(log_path, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(header)
+    else:
+        print(f"File '{log_path}' is not empty.")
+
+
+def dump_data(output_path, row):
+    with open(output_path, 'a', newline='') as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerow(row)

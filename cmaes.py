@@ -30,8 +30,8 @@ def create_bounds(xml_file):
 #end utils
 
 def fitness_func(solution, **kwargs):
-    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/output/statistic_output_{utils.generate_id()}.xml"
-    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/additional/tl_logic_{utils.generate_id()}.xml"
+    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/output/statistic_output_{utils.generate_id()}.xml"
+    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/additional/tl_logic_{utils.generate_id()}.xml"
     utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(solution))
     command = [utils.sumo_executable,
         '-c', kwargs.get('sumocfg_file'),
@@ -56,7 +56,7 @@ def main(argv):
         #parameters preparation
         opts = create_bounds(xml_file=utils.net_dict.get(simulation_name))
         dimension = len(opts.get('bounds')[1])
-        opts['popsize'] = 16
+        opts['popsize'] = 8
         x0 = np.random.uniform(low=opts.get('bounds')[0], high=opts.get('bounds')[1], size=dimension)
         sigma = 0.5
         #----------------------
@@ -67,7 +67,7 @@ def main(argv):
                              net_file=utils.net_dict.get(simulation_name),
                              folder_name=simulation_name,
                              sumocfg_file=utils.sumocfg_dict.get(simulation_name))
-        with ProcessPoolExecutor(16) as executor:
+        with ProcessPoolExecutor() as executor:
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))
