@@ -45,8 +45,8 @@ net_dict = {
 #---------
 
 #simulation args
-time_to_teleport = str(150)
-last_simulation_step = str(5000)
+time_to_teleport = str(-1)
+last_simulation_step = str(4500)
 #---------------
 
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2024-01-15 05:19:55 by Eclipse SUMO sumo Version 1.18.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="/home/pavel/dev/diplom/tssproblem/medium/sumo/../net/osm.net.xml"/>
+        <route-files value="/home/pavel/dev/diplom/tssproblem/medium/duaIterate/iterations/049/trips.odtrips_049.rou.xml"/>
+        <additional-files value="/home/pavel/dev/diplom/tssproblem/medium/res_gen/additional/tl_logic_e1efda90-8594-4513-9015-94124bb69c15.xml"/>
+    </input>
+
+    <output>
+        <statistic-output value="/home/pavel/dev/diplom/tssproblem/medium/res_gen/output/statistic_output_e1efda90-8594-4513-9015-94124bb69c15.xml"/>
+    </output>
+
+    <time>
+        <end value="4500"/>
+    </time>
+
+    <processing>
+        <ignore-route-errors value="true"/>
+        <time-to-teleport value="-1"/>
+    </processing>
+
+    <routing>
+        <device.rerouting.adaptation-steps value="18"/>
+        <device.rerouting.adaptation-interval value="10"/>
+    </routing>
+
+    <report>
+        <verbose value="true"/>
+        <no-warnings value="true"/>
+        <duration-log.statistics value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <gui_only>
+        <gui-settings-file value="/home/pavel/dev/diplom/tssproblem/medium/sumo/osm.view.xml"/>
+    </gui_only>
+
+</configuration>
+-->
+
+<statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
+    <performance clockBegin="1705285195.51" clockEnd="1705285207.34" clockDuration="11.83" traciDuration="2.55" realTimeFactor="380.36" vehicleUpdatesPerSecond="169758.26" personUpdatesPerSecond="0.00" begin="0.00" end="4500.00" duration="4500.00"/>
+    <vehicles loaded="3000" inserted="2058" running="784" waiting="942"/>
+    <teleports total="0" jam="0" yield="0" wrongLane="0"/>
+    <safety collisions="0" emergencyStops="0" emergencyBraking="0"/>
+    <persons loaded="0" running="0" jammed="0"/>
+    <personTeleports total="0" abortWait="0" wrongDest="0"/>
+    <vehicleTripStatistics count="1274" routeLength="917.47" speed="7.02" duration="141.96" waitingTime="52.59" timeLoss="85.86" departDelay="0.57" departDelayWaiting="-1.00" totalTravelTime="180862.00" totalDepartDelay="723.95"/>
+    <pedestrianStatistics number="0" routeLength="0.00" duration="0.00" timeLoss="0.00"/>
+    <rideStatistics number="0"/>
+    <transportStatistics number="0"/>
+</statistics>

@@ -28,7 +28,7 @@ def on_generation(ga_instance, **kwargs):
     times.append(cur_generation_time)
     best_solution, best_fitness_value, best_solution_idx = ga_instance.best_solution(ga_instance.last_generation_fitness)
     utils.dump_data(f"{utils.BASEDIR}/{kwargs.get('folder_name')}/res_{utils.gen_name}/results/{utils.ch_iter_time}.csv",
-                    [abs(best_fitness_value), ga_instance.generations_completed, cur_generation_time-prev_generation_time]) #cost-history-iteration-time log
+                    [abs(best_fitness_value), ga_instance.generations_completed, round(cur_generation_time-prev_generation_time, 2)]) #cost-history-iteration-time log
 
 #end utils
 
@@ -55,11 +55,11 @@ def fitness_func(ga_instance, solution, solution_idx, **kwargs):
 
 
 def main(argv):
-    if len(argv) != 2:
+    if len(argv) != 1:
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
         sys.exit(1)
     else:
-        simulation_name = argv[1] #"medium"
+        simulation_name = "medium" #argv[1] 
         gene_type = int
         gene_space = set_gene_space(utils.net_dict.get(simulation_name))
         generation_times = [time.time(), ]
@@ -73,10 +73,10 @@ def main(argv):
         og_wrapper = lambda ga_instance: on_generation(ga_instance,
                                                        folder_name=simulation_name,
                                                        times=generation_times)
-        ga_instance = pygad.GA(num_generations=4,
+        ga_instance = pygad.GA(num_generations=50,
                                 num_parents_mating=2, 
                                 fitness_func=ff_wrapper,
-                                sol_per_pop=2,
+                                sol_per_pop=16,
                                 num_genes=len(gene_space),
                                 gene_space=gene_space,
                                 gene_type=gene_type,
