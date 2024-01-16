@@ -1,8 +1,11 @@
 import xml.etree.ElementTree as ET
 import numpy as np
-import uuid 
+import uuid
 import os
 import csv
+import pandas as pd
+import matplotlib.pyplot as plt
+
 
 BASEDIR = "/home/pavel/dev/diplom/tssproblem"
 
@@ -67,15 +70,13 @@ def create_new_logic(net_input, additional_output, solution):
     new_root.extend(tl_logics)
     new_tree = ET.ElementTree(new_root)
     new_tree.write(additional_output)
-    
+
 
 def get_total_waiting_time(xml_file):
     tree = ET.parse(xml_file)
     root = tree.getroot()
     vehicle_trip_statistics = root.find(".//vehicleTripStatistics")
     return float(vehicle_trip_statistics.get("waitingTime"))
-
-
 
 def generate_id():
     unique_id = str(uuid.uuid4())
@@ -96,3 +97,29 @@ def dump_data(output_path, row):
     with open(output_path, 'a', newline='') as file:
         csv_writer = csv.writer(file)
         csv_writer.writerow(row)
+
+def plot(simulation_name, plot_name):
+    #
+    #filename = os.path.basename(os.path.splitext(log_path)[0])
+    #df = pd.read_csv(log_path)
+    #df.columns = filename.split('_')
+    if plot_name == ch_iter_time:
+        csv_data_list = []
+        fig, ax = plt.subplots(2, 1, figsize=(8, 6))
+        for alg_name in [gen_name, pso_name, cmaes_name]:
+            log_path = f"{BASEDIR}/{simulation_name}/res_{alg_name}/results/{plot_name}.csv"
+            filename = os.path.basename(os.path.splitext(log_path)[0])
+            df = pd.read_csv(log_path)
+            df.columns = filename.split('_')
+            csv_data_list.append(df)
+
+            ax[0].plot(df['iter'], df['ch'], label= f'{alg_name}')
+            ax[0].set_title(f'cost-history, time, iterations')
+            ax[0].legend()
+
+            ax[1].plot(df['iter'], df['time'], label= f'{alg_name}')
+            ax[1].set_title('cost-history, time, iterations')
+            ax[1].legend()
+            plt.tight_layout()  # Adjust layout to prevent overlap
+        plt.show()
+#plot('medium', 'ch_iter_time')

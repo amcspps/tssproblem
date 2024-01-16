@@ -6,6 +6,7 @@ from concurrent.futures import ProcessPoolExecutor
 import xml.etree.ElementTree as ET
 import sys
 from functools import partial
+import time
 #cmaes utils
 
 def create_bounds(xml_file):
@@ -39,7 +40,8 @@ def fitness_func(solution, **kwargs):
         '--statistic-output', output_file,
         '--additional-files', additional_file,
         '--time-to-teleport', utils.time_to_teleport,
-        '--no-warnings',
+        '--no-warnings', 't',
+        '--no-step-log', 't',
         '-e', utils.last_simulation_step
     ]
 
@@ -57,27 +59,32 @@ def main(argv):
         #parameters preparation
         opts = create_bounds(xml_file=utils.net_dict.get(simulation_name))
         dimension = len(opts.get('bounds')[1])
-        opts['popsize'] = 8
+        opts['popsize'] = 16
         x0 = np.random.uniform(low=opts.get('bounds')[0], high=opts.get('bounds')[1], size=dimension)
         sigma = 0.5
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 1
+        iter_count = 200
 
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
                              folder_name=simulation_name,
                              sumocfg_file=utils.sumocfg_dict.get(simulation_name))
+        #plotting parameters preparation
+        iter_times = [time.time(),]
+        cost_history = []
+        #-------------------------------
         with ProcessPoolExecutor() as executor:
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))
+                #print('before: ',es.result.fbest)
                 es.tell(solutions, fitness_values)
-
-        best_solution = es.result.xbest
-        best_fitness = es.result.fbest
-        print("Best Solution:", best_solution)
-        print("Best Fitness:", best_fitness)
-
+                iter_times.append(time.time()) #iteration time logging
+                cost_history.append(es.result.fbest) #current best fitness value
+        data = zip(cost_history, range(1, len(cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(iter_times, iter_times[1:])])
+        for row in data:
+            utils.dump_data(f"{utils.BASEDIR}/{simulation_name}/res_{utils.cmaes_name}/results/{utils.ch_iter_time}.csv",
+                            row)
 if __name__ == "__main__":
     main(sys.argv)

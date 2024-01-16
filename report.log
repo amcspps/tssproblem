@@ -1,10 +1,30 @@
-2024-01-15 04:50:31,131 - pyswarms.single.global_best - INFO - Optimize for 5 iters with {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
-2024-01-15 04:52:41,450 - pyswarms.single.global_best - INFO - Optimize for 5 iters with {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
-2024-01-15 04:54:10,957 - pyswarms.single.global_best - INFO - Optimization finished | best cost: 89.84, best pos: [33.39339847  2.97384333 37.22189205  2.95012573 30.58265111  3.04839444
- 54.33179965  2.99649669 57.04576065  2.98433234 40.42041476  2.99348454
- 50.3247012   2.96507832 46.25167944  3.00567509 50.58873576  3.0492931
- 50.61697648  2.99567797 55.44160721  3.02231262 56.33276971 56.37481674
-  3.01517081 46.66216502 58.11136346  3.02877218 59.97745987 39.94485178
-  2.99240766 49.58554755 36.65418467  3.03693589 55.10738682 51.77163929
-  2.95412763 31.1136783 ]
-2024-01-15 04:58:22,067 - pyswarms.single.global_best - INFO - Optimize for 5 iters with {'c1': 0.5, 'c2': 0.3, 'w': 0.9}
+2024-01-16 04:18:38,667 - pygad.pygad - ERROR - expected str, bytes or os.PathLike object, not bool
+Traceback (most recent call last):
+  File "/home/pavel/dev/diplom/tssproblem/venv/lib/python3.11/site-packages/pygad/pygad.py", line 1796, in cal_pop_fitness
+    for index, fitness in zip(solutions_to_submit_indices, executor.map(self.fitness_func, [self]*len(solutions_to_submit_indices), solutions_to_submit, solutions_to_submit_indices)):
+  File "/usr/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavel/dev/diplom/tssproblem/gen.py", line 67, in <lambda>
+    ff_wrapper = lambda ga_instance, solution, solution_idx: fitness_func(ga_instance,
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/pavel/dev/diplom/tssproblem/gen.py", line 52, in fitness_func
+    process = subprocess.Popen(command)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.11/subprocess.py", line 1883, in _execute_child
+    self.pid = _fork_exec(
+               ^^^^^^^^^^^
+TypeError: expected str, bytes or os.PathLike object, not bool
