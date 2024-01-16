@@ -99,10 +99,6 @@ def dump_data(output_path, row):
         csv_writer.writerow(row)
 
 def plot(simulation_name, plot_name):
-    #
-    #filename = os.path.basename(os.path.splitext(log_path)[0])
-    #df = pd.read_csv(log_path)
-    #df.columns = filename.split('_')
     if plot_name == ch_iter_time:
         csv_data_list = []
         fig, ax = plt.subplots(2, 1, figsize=(8, 6))
@@ -114,12 +110,16 @@ def plot(simulation_name, plot_name):
             csv_data_list.append(df)
 
             ax[0].plot(df['iter'], df['ch'], label= f'{alg_name}')
-            ax[0].set_title(f'cost-history, time, iterations')
+            ax[0].set_title('cost-history, iterations')
+            ax[0].set_xlabel('iterations')
+            ax[0].set_ylabel('cost-history')
             ax[0].legend()
 
             ax[1].plot(df['iter'], df['time'], label= f'{alg_name}')
-            ax[1].set_title('cost-history, time, iterations')
+            ax[1].set_title('time, iterations')
+            ax[1].set_xlabel('iterations')
+            ax[1].set_ylabel('iteraton time')
             ax[1].legend()
-            plt.tight_layout()  # Adjust layout to prevent overlap
+
+            plt.tight_layout()
         plt.show()
-#plot('medium', 'ch_iter_time')

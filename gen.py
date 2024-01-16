@@ -74,7 +74,7 @@ def main(argv):
         og_wrapper = lambda ga_instance: on_generation(ga_instance,
                                                        folder_name=simulation_name,
                                                        times=generation_times)
-        ga_instance = pygad.GA(num_generations=200,
+        ga_instance = pygad.GA(num_generations=2000,
                                 num_parents_mating=2, 
                                 fitness_func=ff_wrapper,
                                 sol_per_pop=16,

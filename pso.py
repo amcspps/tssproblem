@@ -75,7 +75,7 @@ def main(argv):
                                                 folder_name=simulation_name,
                                                 sumocfg_file=utils.sumocfg_dict.get(simulation_name),
                                                 times=swarm_times)
-        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=200, verbose=False)
+        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=2000, verbose=False)
     data = zip(optimizer.cost_history, range(1, len(optimizer.cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(swarm_times, swarm_times[1:])])
     for row in data:
         utils.dump_data(f"{utils.BASEDIR}/{simulation_name}/res_{utils.pso_name}/results/{utils.ch_iter_time}.csv",

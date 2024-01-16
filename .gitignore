@@ -2,3 +2,6 @@
 __pycache__
 venv
 tmp
+medium/res_gen/*
+medium/res_pso/*
+medium/res_cmaes/*

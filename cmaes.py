@@ -64,7 +64,7 @@ def main(argv):
         sigma = 0.5
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 200
+        iter_count = 2000
 
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
@@ -78,7 +78,6 @@ def main(argv):
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))
-                #print('before: ',es.result.fbest)
                 es.tell(solutions, fitness_values)
                 iter_times.append(time.time()) #iteration time logging
                 cost_history.append(es.result.fbest) #current best fitness value
