@@ -6,6 +6,7 @@ from concurrent.futures import ProcessPoolExecutor
 import xml.etree.ElementTree as ET
 import sys
 from functools import partial
+import time
 #cmaes utils
 
 def create_bounds(xml_file):
@@ -30,15 +31,17 @@ def create_bounds(xml_file):
 #end utils
 
 def fitness_func(solution, **kwargs):
-    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/output/statistic_output_{utils.generate_id()}.xml"
-    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/additional/tl_logic_{utils.generate_id()}.xml"
+    iter_id = utils.generate_id()
+    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/output/statistic_output_{iter_id}.xml"
+    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/additional/tl_logic_{iter_id}.xml"
     utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(solution))
     command = [utils.sumo_executable,
         '-c', kwargs.get('sumocfg_file'),
         '--statistic-output', output_file,
         '--additional-files', additional_file,
         '--time-to-teleport', utils.time_to_teleport,
-        '--no-warnings',
+        '--no-warnings', 't',
+        '--no-step-log', 't',
         '-e', utils.last_simulation_step
     ]
 
@@ -61,22 +64,26 @@ def main(argv):
         sigma = 0.5
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 1
+        iter_count = 2000
 
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
                              folder_name=simulation_name,
                              sumocfg_file=utils.sumocfg_dict.get(simulation_name))
-        with ProcessPoolExecutor(16) as executor:
+        #plotting parameters preparation
+        iter_times = [time.time(),]
+        cost_history = []
+        #-------------------------------
+        with ProcessPoolExecutor() as executor:
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))
                 es.tell(solutions, fitness_values)
-
-        best_solution = es.result.xbest
-        best_fitness = es.result.fbest
-        print("Best Solution:", best_solution)
-        print("Best Fitness:", best_fitness)
-
+                iter_times.append(time.time()) #iteration time logging
+                cost_history.append(es.result.fbest) #current best fitness value
+        data = zip(cost_history, range(1, len(cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(iter_times, iter_times[1:])])
+        for row in data:
+            utils.dump_data(f"{utils.BASEDIR}/{simulation_name}/res_{utils.cmaes_name}/results/{utils.ch_iter_time}.csv",
+                            row)
 if __name__ == "__main__":
     main(sys.argv)
