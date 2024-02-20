@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 import sys
 from functools import partial
 import time
+import pdb
 
 #pso utils
 
@@ -19,10 +20,7 @@ def create_bounds(xml_file):
 
     for tl_logic in root.findall(".//tlLogic"):
         for phase in tl_logic.findall("phase"):
-            if "y" in phase.attrib["state"]:
-                lower_bounds.extend([2.95])
-                upper_bounds.extend([3.05])
-            else:
+            if "y" not in phase.attrib["state"]:
                 lower_bounds.extend([30])
                 upper_bounds.extend([60])
 
@@ -53,29 +51,31 @@ def evaluate_particle(particle, **kwargs):
 def fitness_func(swarm, **kwargs):
     times = kwargs.get('times')
     partial_evaluate_particle = partial(evaluate_particle, **kwargs)
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(12) as executor:
         fitness_values = list(executor.map(partial_evaluate_particle, swarm))
     cur_swarm_time = time.time()
     times.append(cur_swarm_time) #current swarm time logging 
     return np.array(fitness_values)
 
 def main(argv):
-    if len(argv) != 2:
+    if len(argv) != 1:
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
         sys.exit(1)
     else:
-        simulation_name = argv[1] 
+        simulation_name = 'medium' #argv[1]
         swarm_times = [time.time(), ]
         lower_bounds, upper_bounds = create_bounds(utils.net_dict.get(simulation_name))
         num_variables = len(lower_bounds)
-        options = {'c1': 0.5, 'c2': 0.3, 'w': 0.9} 
-        optimizer = ps.single.GlobalBestPSO(n_particles=16, dimensions=num_variables, options=options, bounds=(lower_bounds, upper_bounds))
+        options = {'c1': 2.05, 'c2': 2.05, 'w': 0.72984} #global-best-pso
+        #options = {'c1': 1.5, 'c2': 1.5, 'w': 0.7, 'k': 22, 'p': 2} #local-best-pso 
+        
+        optimizer = ps.single.GlobalBestPSO(n_particles=880, dimensions=num_variables, options=options, oh_strategy={ "w":'exp_decay', "c1":'nonlin_mod',"c2":'lin_variation'}, bounds=(lower_bounds, upper_bounds))
         ff_wrapper = lambda swarm: fitness_func(swarm=swarm, 
                                                 net_file=utils.net_dict.get(simulation_name), 
                                                 folder_name=simulation_name,
                                                 sumocfg_file=utils.sumocfg_dict.get(simulation_name),
                                                 times=swarm_times)
-        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=2000, verbose=False)
+        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=400, verbose=False)
     data = zip(optimizer.cost_history, range(1, len(optimizer.cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(swarm_times, swarm_times[1:])])
     for row in data:
         utils.dump_data(f"{utils.BASEDIR}/{simulation_name}/res_{utils.pso_name}/results/{utils.ch_iter_time}.csv",
