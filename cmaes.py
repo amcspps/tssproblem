@@ -18,10 +18,7 @@ def create_bounds(xml_file):
 
     for tl_logic in root.findall(".//tlLogic"):
         for phase in tl_logic.findall("phase"):
-            if "y" in phase.attrib["state"]:
-                lower_bounds.extend([2.95])
-                upper_bounds.extend([3.05])
-            else:
+            if "y" not in phase.attrib["state"]:
                 lower_bounds.extend([30])
                 upper_bounds.extend([60])
 
@@ -51,20 +48,20 @@ def fitness_func(solution, **kwargs):
     return fitness_value
 
 def main(argv):
-    if len(argv) != 2:
+    if len(argv) != 1:
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
         sys.exit(1)
     else:
-        simulation_name = argv[1]
+        simulation_name = 'medium' #argv[1]
         #parameters preparation
         opts = create_bounds(xml_file=utils.net_dict.get(simulation_name))
         dimension = len(opts.get('bounds')[1])
-        opts['popsize'] = 16
+        opts['AdaptSigma'] = cma.sigma_adaptation.CMAAdaptSigmaTPA
         x0 = np.random.uniform(low=opts.get('bounds')[0], high=opts.get('bounds')[1], size=dimension)
-        sigma = 0.5
+        sigma = 6
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 2000
+        iter_count = 400
 
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
@@ -74,7 +71,7 @@ def main(argv):
         iter_times = [time.time(),]
         cost_history = []
         #-------------------------------
-        with ProcessPoolExecutor() as executor:
+        with ProcessPoolExecutor(12) as executor:
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))

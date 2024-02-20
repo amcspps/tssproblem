@@ -62,9 +62,12 @@ def create_new_logic(net_input, additional_output, solution):
 
     for tl_logic in tl_logics:
         for phase in tl_logic.findall('.//phase'):
-            duration = int(solution[0])
-            solution = np.delete(solution, 0)
-            phase.set('duration', str(int(duration)))
+            if "y" not in phase.attrib["state"]: #if phase os "optimizable"
+                duration = int(solution[0])
+                solution = np.delete(solution, 0)
+                phase.set('duration', str(duration))
+            else: #yellow constant 3
+                phase.set('duration', str(4))
         tl_logic.set('programID', 'generated')
 
     new_root.extend(tl_logics)

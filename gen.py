@@ -7,7 +7,7 @@ import sys
 import time 
 #genetic utils 
 
-def set_gene_space(xml_file):
+def set_gene_space(xml_file): #function to define boundaries for genes in chromosome
     gene_space = []
 
     tree = ET.parse(xml_file)
@@ -15,9 +15,7 @@ def set_gene_space(xml_file):
 
     for tl_logic in root.findall(".//tlLogic"):
         for phase in tl_logic.findall("phase"):
-            if "y" in phase.attrib["state"]:
-                gene_space.append(3)
-            else:
+            if "y" not in phase.attrib["state"]: #if current light phase is not yellow - optimize it 
                 gene_space.append({'low': 30, 'high': 60})
     return gene_space
 
@@ -56,11 +54,11 @@ def fitness_func(ga_instance, solution, solution_idx, **kwargs):
 
 
 def main(argv):
-    if len(argv) != 2:
+    if len(argv) != 1:
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
         sys.exit(1)
     else:
-        simulation_name = argv[1] 
+        simulation_name = 'medium' #argv[1] 
         gene_type = int
         gene_space = set_gene_space(utils.net_dict.get(simulation_name))
         generation_times = [time.time(), ]
@@ -74,14 +72,14 @@ def main(argv):
         og_wrapper = lambda ga_instance: on_generation(ga_instance,
                                                        folder_name=simulation_name,
                                                        times=generation_times)
-        ga_instance = pygad.GA(num_generations=2000,
-                                num_parents_mating=2, 
+        ga_instance = pygad.GA(num_generations=400,
+                                num_parents_mating=8, 
                                 fitness_func=ff_wrapper,
-                                sol_per_pop=16,
+                                sol_per_pop=44,
                                 num_genes=len(gene_space),
                                 gene_space=gene_space,
                                 gene_type=gene_type,
-                                parallel_processing=16,
+                                parallel_processing=12,
                                 save_best_solutions=True,
                                 on_generation=og_wrapper
                                 )
