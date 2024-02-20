@@ -23,8 +23,15 @@ cmaes_name = 'cmaes'
 #simulation-names
 test_name = 'test'
 medium_name = 'medium'
+commercial = 'commercial'
 large_name = 'large'
 #-----
+
+#names-dict
+names_dict = {
+    medium_name: 'medium',
+    commercial: 'commercial'
+}
 
 #exe
 sumo_executable = '/usr/bin/sumo'
@@ -126,3 +133,4 @@ def plot(simulation_name, plot_name):
 
             plt.tight_layout()
         plt.show()
+
