@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-BASEDIR = "/home/pavel/dev/diplom/tssproblem"
+BASEDIR = os.getcwd()
 
 #plot-names
 ch_iter_time = 'ch_iter_time'
@@ -92,15 +92,15 @@ def generate_id():
     unique_id = str(uuid.uuid4())
     return unique_id
 
-def init_log_file(simulation_name, alg_name, plot_name):
-    log_path = f"{BASEDIR}/{simulation_name}/res_{alg_name}/results/{plot_name}.csv"
-    if not os.path.exists(log_path) or os.path.getsize(log_path) == 0:
-        header = list(plot_name.split('_'))
-        with open(log_path, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(header)
-    else:
-        print(f"File '{log_path}' is not empty.")
+# def init_log_file(simulation_name, alg_name, plot_name):
+#     log_path = f"{BASEDIR}/{simulation_name}/res_{alg_name}/results/{plot_name}.csv"
+#     if not os.path.exists(log_path) or os.path.getsize(log_path) == 0:
+#         header = list(plot_name.split('_'))
+#         with open(log_path, 'w', newline='') as file:
+#             writer = csv.writer(file)
+#             writer.writerow(header)
+#     else:
+#         print(f"File '{log_path}' is not empty.")
 
 
 def dump_data(output_path, row):
@@ -134,3 +134,5 @@ def plot(simulation_name, plot_name):
             plt.tight_layout()
         plt.show()
 
+def is_started_with_sudo():
+    return 'SUDO_USER' in os.environ
