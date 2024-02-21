@@ -9,50 +9,9 @@ import matplotlib.pyplot as plt
 
 BASEDIR = os.getcwd()
 
-#plot-names
-ch_iter_time = 'ch_iter_time'
-#----------
-
-#alg-names
-gen_name = 'gen'
-pso_name = 'pso'
-cmaes_name = 'cmaes'
-#---------
-
-
-#simulation-names
-test_name = 'test'
-medium_name = 'medium'
-commercial = 'commercial'
-large_name = 'large'
-#-----
-
-#names-dict
-names_dict = {
-    medium_name: 'medium',
-    commercial: 'commercial'
-}
-
 #exe
 sumo_executable = '/usr/bin/sumo'
 #--------
-
-#conifigs
-sumocfg_dict = {
-    test_name: f'{BASEDIR}/test/sumo/simulation.sumocfg',
-    medium_name: f'{BASEDIR}/medium/sumo/osm.sumocfg',
-    large_name: 'placeholder',
-}
-#--------
-
-#net-files
-net_dict = {
-    test_name: f'{BASEDIR}/test/net/osm.net.xml',
-    medium_name: f'{BASEDIR}/medium/net/osm.net.xml',
-    large_name: f'placeholder',
-
-}
-#---------
 
 #simulation args
 time_to_teleport = str(-1)
@@ -92,17 +51,6 @@ def generate_id():
     unique_id = str(uuid.uuid4())
     return unique_id
 
-# def init_log_file(simulation_name, alg_name, plot_name):
-#     log_path = f"{BASEDIR}/{simulation_name}/res_{alg_name}/results/{plot_name}.csv"
-#     if not os.path.exists(log_path) or os.path.getsize(log_path) == 0:
-#         header = list(plot_name.split('_'))
-#         with open(log_path, 'w', newline='') as file:
-#             writer = csv.writer(file)
-#             writer.writerow(header)
-#     else:
-#         print(f"File '{log_path}' is not empty.")
-
-
 def dump_data(output_path, row):
     with open(output_path, 'a', newline='') as file:
         csv_writer = csv.writer(file)
@@ -113,7 +61,7 @@ def plot(simulation_name, plot_name):
         csv_data_list = []
         fig, ax = plt.subplots(2, 1, figsize=(8, 6))
         for alg_name in [gen_name, pso_name, cmaes_name]:
-            log_path = f"{BASEDIR}/{simulation_name}/res_{alg_name}/results/{plot_name}.csv"
+            log_path = f"{BASEDIR}/{simulation_name}/results/{plot_name}.csv"
             filename = os.path.basename(os.path.splitext(log_path)[0])
             df = pd.read_csv(log_path)
             df.columns = filename.split('_')
