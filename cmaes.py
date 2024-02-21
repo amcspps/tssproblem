@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 import sys
 from functools import partial
 import time
+import os
 #cmaes utils
 
 def create_bounds(xml_file):
@@ -29,8 +30,8 @@ def create_bounds(xml_file):
 
 def fitness_func(solution, **kwargs):
     iter_id = utils.generate_id()
-    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/output/statistic_output_{iter_id}.xml"
-    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_cmaes/additional/tl_logic_{iter_id}.xml"
+    output_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/statistic_output_{iter_id}.xml"
+    additional_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/tl_logic_{iter_id}.xml"
     utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(solution))
     command = [utils.sumo_executable,
         '-c', kwargs.get('sumocfg_file'),
@@ -45,6 +46,7 @@ def fitness_func(solution, **kwargs):
     process = subprocess.Popen(command)
     process.wait()
     fitness_value = utils.get_total_waiting_time(output_file)
+    subprocess.run(['rm', additional_file, output_file])
     return fitness_value
 
 def main(argv):
@@ -61,7 +63,7 @@ def main(argv):
         sigma = 6
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 400
+        iter_count = 2
 
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
@@ -79,8 +81,13 @@ def main(argv):
                 iter_times.append(time.time()) #iteration time logging
                 cost_history.append(es.result.fbest) #current best fitness value
         data = zip(cost_history, range(1, len(cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(iter_times, iter_times[1:])])
+        #results-dump
+        current_dir = os.getcwd()
+        res_path = f"{current_dir}/{simulation_name}/results/ch_iter_time_cmaes.csv"
+        if os.path.exists(res_path):
+            subprocess.run(['rm', res_path])
         for row in data:
-            utils.dump_data(f"{utils.BASEDIR}/{simulation_name}/res_{utils.cmaes_name}/results/{utils.ch_iter_time}.csv",
-                            row)
+            utils.dump_data(res_path, row)
+        #------------                  
 if __name__ == "__main__":
     main(sys.argv)

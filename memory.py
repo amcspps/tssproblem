@@ -17,26 +17,28 @@ def is_mounted(target):
 def directory_exists(directory):
     return os.path.exists(directory)
 
-def create_hierarchy(target_directory):
+def create_mountpoint(target_directory):
     subprocess.run(['mkdir', target_directory])
+
+def mount_tmpfs(target_directory, size):
+    size_arg = 'size='+ str(size) + 'M'
+    subprocess.run(['mount', '-t', 'tmpfs', '-o', size_arg, 'tmpfs', target_directory])
     for name in utils.names_dict:
         subprocess.run(['mkdir', os.path.join(target_directory, name)])
-
-def mount_tmpfs(target_directory):
-    subprocess.run(['mount', '-t', 'tmpfs', '-o', 'size=10M', 'tmpfs', target_directory])
+    subprocess.run(['chmod','-R','777', target_directory])
      
-def mount():
+def mount(size):
     if not directory_exists(target_mount_point):
         print(f"{target_mount_point} does not exist.")
-        create_hierarchy(target_directory=target_mount_point)
+        create_mountpoint(target_directory=target_mount_point)
         print(f"{target_mount_point} hierarchy created.")
-        mount_tmpfs(target_mount_point)
+        mount_tmpfs(target_mount_point, size=size)
         print(f"{target_mount_point} has been mounted.")
     else:
         if is_mounted(target_mount_point):
             print(f"{target_mount_point} is already mounted.")
         else:
-            mount_tmpfs(target_mount_point)
+            mount_tmpfs(target_mount_point, size=size)
             print(f"{target_mount_point} has been mounted.")
 
 def unmount():
@@ -48,17 +50,35 @@ parser = argparse.ArgumentParser(description='Manage tmpfs memory mounts')
 parser.add_argument('--sudo', action='store_true', help='Check if the script was started with sudo')
 parser.add_argument('-m', action='store_true', help='Mount tmpfs memory')
 parser.add_argument('-u', action='store_true', help='Unmount tmpfs memory and delete directory')
+parser.add_argument('-s', type=str, default='10', help='Size of tmpfs memory in megabytes (default: 10)')
 args = parser.parse_args()
 
-def is_started_with_sudo():
-    return 'SUDO_USER' in os.environ
+# def is_started_with_sudo():
+#     return 'SUDO_USER' in os.environ
 
-if args.sudo or is_started_with_sudo():        
-    if args.m:
-        mount()
-    elif args.u:
-        unmount()
+def main():
+    if args.sudo or utils.is_started_with_sudo():       
+        if args.m:
+            try:
+                int(args.s)
+            except ValueError:
+                print('Input correct size')
+            if(int(args.s) > 500):
+                print('Memory size must be < 500M')
+                return
+            mount(args.s)
+            # file_size = 8 * 500 * 1024 * 1024
+            # file_path = os.path.join(target_mount_point, 'large_file.txt')
+            # data = os.urandom(file_size)
+            # with open(file_path, 'wb') as f:
+            #     f.write(data)
+        elif args.u:
+            unmount()
+        else:
+            print("No action specified. Use -m to mount or -u to unmount.")
     else:
-        print("No action specified. Use -m to mount or -u to unmount.")
-else:
-    print("usage: sudo python script.py")
+        print("usage: sudo python memory.py <args>")
+
+
+if(__name__ == '__main__'):
+    main()

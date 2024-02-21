@@ -8,6 +8,7 @@ import sys
 from functools import partial
 import time
 import pdb
+import os
 
 #pso utils
 
@@ -30,8 +31,8 @@ def create_bounds(xml_file):
 
 def evaluate_particle(particle, **kwargs):
     iter_id = utils.generate_id()
-    output_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_pso/output/statistic_output_{iter_id}.xml"
-    additional_file = f"/home/pavel/dev/diplom/tssproblem/{kwargs.get('folder_name')}/res_pso/additional/tl_logic_{iter_id}.xml"
+    output_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/statistic_output_{iter_id}.xml"
+    additional_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/tl_logic_{iter_id}.xml"
     utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(particle))
     command = [utils.sumo_executable,
         '-c', kwargs.get('sumocfg_file'),
@@ -46,6 +47,7 @@ def evaluate_particle(particle, **kwargs):
     process = subprocess.Popen(command)
     process.wait()
     fitness_value = utils.get_total_waiting_time(output_file)
+    subprocess.run(['rm', additional_file, output_file])
     return fitness_value
 
 def fitness_func(swarm, **kwargs):
@@ -59,7 +61,7 @@ def fitness_func(swarm, **kwargs):
 
 def main(argv):
     if len(argv) != 1:
-        print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
+        print('Usage: python gen.py <simulation-folder-name (for example: "medium")>') #rework this 
         sys.exit(1)
     else:
         simulation_name = 'medium' #argv[1]
@@ -69,16 +71,22 @@ def main(argv):
         options = {'c1': 2.05, 'c2': 2.05, 'w': 0.72984} #global-best-pso
         #options = {'c1': 1.5, 'c2': 1.5, 'w': 0.7, 'k': 22, 'p': 2} #local-best-pso 
         
-        optimizer = ps.single.GlobalBestPSO(n_particles=880, dimensions=num_variables, options=options, oh_strategy={ "w":'exp_decay', "c1":'nonlin_mod',"c2":'lin_variation'}, bounds=(lower_bounds, upper_bounds))
+        optimizer = ps.single.GlobalBestPSO(n_particles=16, dimensions=num_variables, options=options, oh_strategy={ "w":'exp_decay', "c1":'nonlin_mod',"c2":'lin_variation'}, bounds=(lower_bounds, upper_bounds))
         ff_wrapper = lambda swarm: fitness_func(swarm=swarm, 
                                                 net_file=utils.net_dict.get(simulation_name), 
                                                 folder_name=simulation_name,
                                                 sumocfg_file=utils.sumocfg_dict.get(simulation_name),
                                                 times=swarm_times)
-        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=400, verbose=False)
+        best_cost, best_position = optimizer.optimize(ff_wrapper, iters=2, verbose=False)
     data = zip(optimizer.cost_history, range(1, len(optimizer.cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(swarm_times, swarm_times[1:])])
+    #results-dump
+    subprocess.run(['rm', 'report.log']) #delete default log file
+    current_dir = os.getcwd()
+    res_path = f"{current_dir}/{simulation_name}/results/ch_iter_time_pso.csv"
+    if os.path.exists(res_path):
+        subprocess.run(['rm', res_path])
     for row in data:
-        utils.dump_data(f"{utils.BASEDIR}/{simulation_name}/res_{utils.pso_name}/results/{utils.ch_iter_time}.csv",
-                    row)
+        utils.dump_data(res_path, row)
+    #------------
 if __name__ == "__main__":
     main(sys.argv)
