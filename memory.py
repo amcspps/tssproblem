@@ -23,7 +23,7 @@ def create_mountpoint(target_directory):
 def mount_tmpfs(target_directory, size):
     size_arg = 'size='+ str(size) + 'M'
     subprocess.run(['mount', '-t', 'tmpfs', '-o', size_arg, 'tmpfs', target_directory])
-    for name in utils.names_dict:
+    for name in utils.names:
         subprocess.run(['mkdir', os.path.join(target_directory, name)])
     subprocess.run(['chmod','-R','777', target_directory])
      

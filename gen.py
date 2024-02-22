@@ -29,7 +29,7 @@ def on_generation(ga_instance, **kwargs):
     data.append((abs(best_fitness_value), ga_instance.generations_completed, round(cur_generation_time-prev_generation_time, 2)))
 #end utils
 
-def fitness_func(ga_instance, solution, solution_idx, **kwargs): 
+def fitness_func(ga_instance, solution, solution_idx, **kwargs): #specific argument order for genetic algorithm
     #parameters preparation
     iter_id = utils.generate_id()
     output_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/statistic_output_{iter_id}.xml"

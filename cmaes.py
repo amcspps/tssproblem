@@ -54,10 +54,11 @@ def main(argv):
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
         sys.exit(1)
     else:
-        simulation_name = 'medium' #argv[1]
+        simulation_name = 'commercial' #argv[1]
         #parameters preparation
         opts = create_bounds(xml_file=utils.net_dict.get(simulation_name))
         dimension = len(opts.get('bounds')[1])
+
         opts['AdaptSigma'] = cma.sigma_adaptation.CMAAdaptSigmaTPA
         x0 = np.random.uniform(low=opts.get('bounds')[0], high=opts.get('bounds')[1], size=dimension)
         sigma = 6
@@ -73,7 +74,7 @@ def main(argv):
         iter_times = [time.time(),]
         cost_history = []
         #-------------------------------
-        with ProcessPoolExecutor(12) as executor:
+        with ProcessPoolExecutor(1) as executor:
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))
