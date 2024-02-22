@@ -8,6 +8,7 @@ import sys
 from functools import partial
 import time
 import os
+import csv
 #cmaes utils
 
 def create_bounds(xml_file):
@@ -61,10 +62,10 @@ def main(argv):
 
         opts['AdaptSigma'] = cma.sigma_adaptation.CMAAdaptSigmaTPA
         x0 = np.random.uniform(low=opts.get('bounds')[0], high=opts.get('bounds')[1], size=dimension)
-        sigma = 6
+        sigma = 5
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 2
+        iter_count = 3
 
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
@@ -81,9 +82,20 @@ def main(argv):
                 es.tell(solutions, fitness_values)
                 iter_times.append(time.time()) #iteration time logging
                 cost_history.append(es.result.fbest) #current best fitness value
-        data = zip(cost_history, range(1, len(cost_history) + 1), [round(cur - prev, 2) for prev, cur in zip(iter_times, iter_times[1:])])
+        rounded_times = [round(cur - prev, 2) for prev, cur in zip(iter_times, iter_times[1:])]
+        data = zip(cost_history, range(1, len(cost_history) + 1), rounded_times)
         #results-dump
         current_dir = os.getcwd()
+        table = f"{current_dir}/{simulation_name}/results/results.csv"
+        
+        #header = ['name', 'xbest', 'fbest', 'iter-count', 'evals-all', 'sum-time', 'avg-iter-time']
+        with open(table, 'a', newline='') as csvfile:
+            csv_writer = csv.writer(csvfile)
+            csv_writer.writerow(('cmaes', np.round(es.result.xbest),
+                                  es.result.fbest, iter_count, es.best.evalsall,
+                                  np.round(sum(rounded_times), decimals=2),
+                                  np.round(np.mean(rounded_times), decimals=2)))
+        
         res_path = f"{current_dir}/{simulation_name}/results/ch_iter_time_cmaes.csv"
         if os.path.exists(res_path):
             subprocess.run(['rm', res_path])
