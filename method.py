@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.optimize import dual_annealing
 from scipy.optimize import Bounds
-
+import subprocess
 import sys
 import utils
 import xml.etree.ElementTree as ET
@@ -25,6 +25,28 @@ def create_bounds(xml_file):
     return bounds
 #------------------
 
+def fitness_func(solution, **kwargs): 
+    iter_id = utils.generate_id()
+    output_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/statistic_output_{iter_id}.xml"
+    additional_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/tl_logic_{iter_id}.xml"
+    utils.create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(solution))
+    command = [utils.sumo_executable,
+        '-c', kwargs.get('sumocfg_file'),
+        '--statistic-output', output_file,
+        '--additional-files', additional_file,
+        '--time-to-teleport', utils.time_to_teleport,
+        '--no-warnings', 't',
+        '--no-step-log', 't',
+        '-e', utils.last_simulation_step
+    ]
+
+    process = subprocess.Popen(command)
+    process.wait()
+    fitness_value = utils.get_total_waiting_time(output_file)
+    subprocess.run(['rm', additional_file, output_file])
+    return fitness_value
+
+
 def main(argv):
     if len(argv) != 1:
         print('Usage: python gen.py <simulation-folder-name (for example: "medium")>')
@@ -33,7 +55,7 @@ def main(argv):
         simulation_name = 'medium' #argv[1]
         bounds = create_bounds(xml_file=utils.net_dict.get(simulation_name))
 
-        ff_partial = partial(utils.fitness_func,
+        ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
                              folder_name=simulation_name,
                              sumocfg_file=utils.sumocfg_dict.get(simulation_name))

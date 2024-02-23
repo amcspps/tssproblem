@@ -35,7 +35,7 @@ def update_sumocfg(index):
 def main():
     if args.sudo or utils.is_started_with_sudo():
         subprocess.run(['python', 'memory.py', '-u'])
-        subprocess.run(['python', 'memory.py', '-m', '-s', str(500)])
+        subprocess.run(['python', 'memory.py', '-m', '-s', str(4096)])
         subprocess.run(["od2trips", "-c", od2trips_cfg, "-n", od_matrix, "-o", od2trips_out])
 
         if(not os.path.isdir(iterations_path)):

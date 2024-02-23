@@ -109,24 +109,37 @@ def plot(simulation_name, plot_name):
 def is_started_with_sudo():
     return 'SUDO_USER' in os.environ
 
+def histogram():
+    # Lists to store data
+    alg_names = []
+    evals_all = []
+    sum_times = []
+    # Read data from CSV file
+    with open(f'{BASEDIR}/commercial/results/results.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            alg_names.append(row['alg-name'])
+            evals_all.append(int(row['evals-all']))  # Convert to integer
+            sum_times.append(float(row['sum-time']))
+    # Create a dictionary to store total evaluations for each algorithm
+    total_evals = {}
+    total_times = {}
+    for alg, evals in zip(alg_names, evals_all):
+        total_evals[alg] = total_evals.get(alg, 0) + evals
+    for alg, time in zip(alg_names, sum_times):
+        total_times[alg] = total_times.get(alg, 0) + time
+    # Create histogram
+    plt.figure()
+    plt.bar(total_evals.keys(), total_evals.values(), alpha=0.5)
+    plt.xlabel('Algorithm name')
+    plt.ylabel('Total evaluations')
+    plt.title('Total evaluations: commercial')
+    plt.grid(True)
 
-def fitness_func(solution, **kwargs):
-    iter_id = generate_id()
-    output_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/statistic_output_{iter_id}.xml"
-    additional_file = f"/mnt/tss-inter-logs/{kwargs.get('folder_name')}/tl_logic_{iter_id}.xml"
-    create_new_logic(net_input=kwargs.get('net_file'), additional_output=additional_file, solution=np.round(solution))
-    command = [sumo_executable,
-        '-c', kwargs.get('sumocfg_file'),
-        '--statistic-output', output_file,
-        '--additional-files', additional_file,
-        '--time-to-teleport', time_to_teleport,
-        '--no-warnings', 't',
-        '--no-step-log', 't',
-        '-e', last_simulation_step
-    ]
-
-    process = subprocess.Popen(command)
-    process.wait()
-    fitness_value = get_total_waiting_time(output_file)
-    subprocess.run(['rm', additional_file, output_file])
-    return fitness_value
+    plt.figure()
+    plt.bar(total_times.keys(), total_times.values(), alpha=0.5)
+    plt.xlabel('Algorithm name')
+    plt.ylabel('Total times')
+    plt.title('Total times: commercial')
+    plt.grid(True)
+plt.show()

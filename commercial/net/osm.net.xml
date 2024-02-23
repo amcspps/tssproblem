@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2024-02-22 04:53:57 by Eclipse SUMO netedit Version 1.18.0
+<!-- generated on 2024-02-23 00:06:56 by Eclipse SUMO netedit Version 1.18.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/neteditConfiguration.xsd">
 
     <input>
@@ -318,14 +318,14 @@
     </edge>
 
     <tlLogic id="linked_0" type="static" programID="0" offset="0">
-        <phase duration="25" state="rrGGGGrrrGGrrGGrrrrrrGG"/>
-        <phase duration="25" state="GGrrrrGrrrrGGGGGGGGrrrr"/>
-        <phase duration="25" state="GGGGrrGGGGGrrrrrrGGGGrr"/>
+        <phase duration="30" state="rrGGGGrrrGGrrGGrrrrrrGG"/>
+        <phase duration="30" state="GGrrrrGrrrrGGGGGGGGrrrr"/>
+        <phase duration="30" state="GGGGrrGGGGGrrrrrrGGGGrr"/>
     </tlLogic>
     <tlLogic id="separate_0" type="static" programID="0" offset="0">
-        <phase duration="36" state="GGrrGGrGrrGr"/>
-        <phase duration="42" state="GGGGrrrGGGrr"/>
-        <phase duration="42" state="GGrrrrGGrrGG"/>
+        <phase duration="30" state="GGrrGGrGrrGr"/>
+        <phase duration="30" state="GGGGrrrGGGrr"/>
+        <phase duration="30" state="GGrrrrGGrrGG"/>
     </tlLogic>
 
     <junction id="1421833999" type="priority" x="454.02" y="235.39" incLanes="-66665848#1_0 C2_0" intLanes=":1421833999_0_0 :1421833999_1_0 :1421833999_1_1" shape="453.39,240.33 461.46,235.13 459.26,233.22 458.14,232.86 457.05,232.49 456.01,231.80 455.04,230.47 449.38,233.45">

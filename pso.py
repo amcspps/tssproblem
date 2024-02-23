@@ -96,10 +96,6 @@ def main(argv):
                                   np.round(sum(rounded_times), decimals=2),
                                   np.round(np.mean(rounded_times), decimals=2)))
 
-
-
-
-
     subprocess.run(['rm', 'report.log']) #delete default log file
     current_dir = os.getcwd()
     res_path = f"{current_dir}/{simulation_name}/results/ch_iter_time_pso.csv"

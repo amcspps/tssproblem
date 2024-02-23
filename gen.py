@@ -72,7 +72,7 @@ def main(argv):
         gene_type = int
         gene_space = set_gene_space(utils.net_dict.get(simulation_name))
         generation_times = [time.time(), ]
-        num_generations = 2
+        num_generations = 400
         ff_wrapper = lambda ga_instance, solution, solution_idx: fitness_func(ga_instance, 
                                                                               solution, 
                                                                               solution_idx, 
@@ -84,13 +84,13 @@ def main(argv):
                                                        folder_name=simulation_name,
                                                        times=generation_times)
         ga_instance = pygad.GA(num_generations=num_generations,
-                                num_parents_mating=2, 
+                                num_parents_mating=8, 
                                 fitness_func=ff_wrapper,
-                                sol_per_pop=8,
+                                sol_per_pop=16,
                                 num_genes=len(gene_space),
                                 gene_space=gene_space,
                                 gene_type=gene_type,
-                                parallel_processing=12,
+                                parallel_processing=15,
                                 save_best_solutions=True,
                                 on_generation=og_wrapper
                                 )
@@ -101,10 +101,11 @@ def main(argv):
     table = f"{current_dir}/{simulation_name}/results/results.csv"
 
     best_sol, best_sol_fit, best_match_idx = ga_instance.best_solution()
-    #header = ['name', 'xbest', 'fbest', 'iter-count', 'evals-all', 'sum-time', 'avg-iter-time']
+    header = ['alg-name','map-name', 'xbest', 'fbest', 'iter-count', 'evals-all', 'sum-time', 'avg-iter-time']
     with open(table, 'a', newline='') as csvfile:
             csv_writer = csv.writer(csvfile)
-            csv_writer.writerow(('gen', best_sol,
+            csv_writer.writerow(header)
+            csv_writer.writerow(('gen', simulation_name, best_sol,
                                   abs(best_sol_fit), num_generations, fitness_counter.value -1,
                                   np.round(sum(rounded_times), decimals=2),
                                   np.round(np.mean(rounded_times), decimals=2)))

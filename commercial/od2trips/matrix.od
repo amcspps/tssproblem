@@ -6,12 +6,12 @@ $O;D2
 * some
 * additional
 * comments
-         from_a1          to_e2       100
-         from_a1          to_b1       100
-         from_e1          to_a2       100
-         from_b2          to_e2       100
+         from_a1          to_e2       700
+         from_a1          to_b1       300
+         from_e1          to_a2       700
+         from_b2          to_e2       200
          from_c2          to_e2       100
-         from_c2          to_d2       100
-         from_d1          to_c1       100
-         from_d1          to_a2       100
-         from_e1          to_b1       100
+         from_c2          to_d2       50
+         from_d1          to_c1       200
+         from_d1          to_a2       10
+         from_e1          to_b1       150

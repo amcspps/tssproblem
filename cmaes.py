@@ -65,8 +65,7 @@ def main(argv):
         sigma = 5
         #----------------------
         es = cma.CMAEvolutionStrategy(x0, sigma, opts)
-        iter_count = 3
-
+        iter_count = 75
         ff_partial = partial(fitness_func,
                              net_file=utils.net_dict.get(simulation_name),
                              folder_name=simulation_name,
@@ -75,7 +74,7 @@ def main(argv):
         iter_times = [time.time(),]
         cost_history = []
         #-------------------------------
-        with ProcessPoolExecutor(1) as executor:
+        with ProcessPoolExecutor(15) as executor:
             for _ in range(iter_count):
                 solutions = es.ask()
                 fitness_values = list(executor.map(ff_partial, solutions))
@@ -91,7 +90,7 @@ def main(argv):
         #header = ['name', 'xbest', 'fbest', 'iter-count', 'evals-all', 'sum-time', 'avg-iter-time']
         with open(table, 'a', newline='') as csvfile:
             csv_writer = csv.writer(csvfile)
-            csv_writer.writerow(('cmaes', np.round(es.result.xbest),
+            csv_writer.writerow(('cmaes', simulation_name, np.round(es.result.xbest),
                                   es.result.fbest, iter_count, es.best.evalsall,
                                   np.round(sum(rounded_times), decimals=2),
                                   np.round(np.mean(rounded_times), decimals=2)))

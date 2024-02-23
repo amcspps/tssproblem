@@ -53,9 +53,6 @@ parser.add_argument('-u', action='store_true', help='Unmount tmpfs memory and de
 parser.add_argument('-s', type=str, default='10', help='Size of tmpfs memory in megabytes (default: 10)')
 args = parser.parse_args()
 
-# def is_started_with_sudo():
-#     return 'SUDO_USER' in os.environ
-
 def main():
     if args.sudo or utils.is_started_with_sudo():       
         if args.m:
@@ -63,15 +60,10 @@ def main():
                 int(args.s)
             except ValueError:
                 print('Input correct size')
-            if(int(args.s) > 500):
+            if(int(args.s) > 5000):
                 print('Memory size must be < 500M')
                 return
             mount(args.s)
-            # file_size = 8 * 500 * 1024 * 1024
-            # file_path = os.path.join(target_mount_point, 'large_file.txt')
-            # data = os.urandom(file_size)
-            # with open(file_path, 'wb') as f:
-            #     f.write(data)
         elif args.u:
             unmount()
         else:
